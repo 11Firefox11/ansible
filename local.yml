@@ -1,0 +1,19 @@
+- hosts: localhost
+  vars:
+    current_user: "{{ ansible_user | default(ansible_env.USER) }}"
+  pre_tasks:
+    - name: Update Apt
+      become: true
+      apt:
+        force_apt_get: true
+        update_cache: true
+        state: present
+      tags:
+        - install
+        - core
+  tasks:
+    - include_tasks: tasks/zsh-setup.yml
+      tags:
+        - install
+        - zsh
+        - shell
