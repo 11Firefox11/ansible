@@ -1,5 +1,6 @@
 - name: Install stow
   apt: name=stow
+  tags: &tags_for_dotfiles [ 'setup', 'dotfiles', 'shell' ]
 
 - name: Clone .dotfiles repo
   ansible.builtin.git:
@@ -9,6 +10,8 @@
     update: yes
     accept_hostkey: yes
     version: main
+  tags: *tags_for_dotfiles
 
 - name: Stow dotfiles
   shell: cd $HOME/.dotfiles && ./install
+  tags: *tags_for_dotfiles

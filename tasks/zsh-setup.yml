@@ -3,29 +3,35 @@
   apt:
     name: zsh
     state: present
+  tags: &tags_for_zsh_install [ 'install', 'zsh', 'shell' ]
 
 - name: Set ZSH as default shell
   user:
     name: "{{ current_user }}"
     shell: "{{ lookup('pipe', 'which zsh') }}"
   become: true
+  tags: *tags_for_zsh_install
 
 - name: Check if Oh My Zsh is already installed
   stat:
     path: "/home/{{ current_user }}/.oh-my-zsh"
   register: oh_my_stats
+  tags: *tags_for_zsh_install
 
 - name: Install Oh My Zsh
   shell: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh > ~/.oh-my-installer && chmod +x ~/.oh-my-installer && ~/.oh-my-installer
   when: not oh_my_stats.stat.exists
   become_user: "{{ current_user }}"
+  tags: *tags_for_zsh_install
 
 - name: Install zsh-autosuggestions
   ansible.builtin.git:
     repo: "https://github.com/zsh-users/zsh-autosuggestions.git"
     dest: "~/.oh-my-zsh/plugins/zsh-autosuggestions"
+  tags: *tags_for_zsh_install
 
 - name: Install zsh-syntax-highlighting
   ansible.builtin.git:
     repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git"
     dest: "~/.oh-my-zsh/plugins/zsh-syntax-highlighting"
+  tags: *tags_for_zsh_install
