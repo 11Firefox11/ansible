@@ -17,3 +17,8 @@
         - install
         - zsh
         - shell
+    - include_tasks: tasks/dotfiles.yml
+      tags:
+        - setup
+        - dotfiles
+        - shell
