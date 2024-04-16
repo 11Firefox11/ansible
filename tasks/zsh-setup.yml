@@ -4,13 +4,13 @@
     name: zsh
     state: present
 
-- name : Set ZSH as default shell
+- name: Set ZSH as default shell
   user:
     name: "{{ current_user }}"
     shell: "{{ lookup('pipe', 'which zsh') }}"
   become: true
 
-- name: "Check that the /home/{{ current_user }}/.oh-my-zsh.conf exists"
+- name: Check if Oh My Zsh is already installed
   stat:
     path: "/home/{{ current_user }}/.oh-my-zsh"
   register: oh_my_stats
