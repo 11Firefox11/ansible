@@ -22,3 +22,7 @@
         - setup
         - dotfiles
         - shell
+    - include_tasks: tasks/productivity-tools.yml
+      tags:
+        - install
+        - shell
