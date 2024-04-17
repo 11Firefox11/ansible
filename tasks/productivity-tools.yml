@@ -5,3 +5,14 @@
   tags:
     - install
     - shell
+
+- name: Install tldr
+  become: true
+  get_url:
+    url: https://raw.githubusercontent.com/raylee/tldr/master/tldr
+    dest: /bin/
+    mode: '+x'
+  tags:
+    - install
+    - shell
+    - productivity
