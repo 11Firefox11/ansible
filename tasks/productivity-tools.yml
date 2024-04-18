@@ -6,18 +6,48 @@
     - install
     - shell
 
+- name: Ensure ~/.local/bin directory exists
+  file:
+    path: "~/.local/bin"
+    state: directory
+  tags:
+    - install
+    - shell
+    - productivity
+
 - name: Install tldr
   become: true
   get_url:
     url: https://raw.githubusercontent.com/raylee/tldr/master/tldr
-    dest: /bin/
+    dest: "~/.local/bin/"
     mode: '+x'
   tags:
     - install
     - shell
     - productivity
 
-- name: "{{ current_user }}"
+- name: Install bat
+  become: true
+  apt:
+    name: bat
+    state: present
+    update_cache: yes
+  tags:
+    - install
+    - shell
+    - productivity
+
+- name: Create symbolic link for batcat
+  file:
+    src: "/usr/bin/batcat"
+    dest: "~/.local/bin/bat"
+    state: link
+  tags:
+    - install
+    - shell
+    - productivity
+
+- name: Install zoxide
   shell: curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
   args:
     executable: /bin/sh
