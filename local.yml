@@ -27,3 +27,8 @@
         - install
         - shell
         - productivity
+    - include_tasks: tasks/eza-install.yml
+      tags:
+        - install
+        - shell
+        - productivity
