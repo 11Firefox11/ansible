@@ -16,7 +16,6 @@
     - productivity
 
 - name: Install tldr
-  become: true
   get_url:
     url: https://raw.githubusercontent.com/raylee/tldr/master/tldr
     dest: "~/.local/bin/"
