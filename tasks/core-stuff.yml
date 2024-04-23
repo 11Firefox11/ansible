@@ -1,0 +1,8 @@
+- name: Install core stuff from apt (1st)
+  become: true
+  apt:
+    name: [ 'xterm' ]
+  tags:
+    - install
+    - shell
+    - core
