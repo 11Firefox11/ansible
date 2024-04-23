@@ -15,3 +15,7 @@
 - name: Stow dotfiles
   shell: cd $HOME/.dotfiles && ./install
   tags: *tags_for_dotfiles
+
+- name: Reload xterm
+  shell: xrdb -merge ~/.Xresources
+  tags: *tags_for_dotfiles
