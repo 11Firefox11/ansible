@@ -1,4 +1,5 @@
 - name: Install stow
+  become: true
   apt: name=stow
   tags: &tags_for_dotfiles [ 'setup', 'dotfiles', 'shell' ]
 
@@ -16,6 +17,9 @@
   shell: cd $HOME/.dotfiles && ./install
   tags: *tags_for_dotfiles
 
-- name: Reload xterm
-  shell: xrdb -merge ~/.Xresources
-  tags: *tags_for_dotfiles
+#- name: Reload xterm
+#  shell: xrdb -merge ~/.Xresources
+#  tags:
+#    - setup
+#    - dotfiles
+#    - desktop

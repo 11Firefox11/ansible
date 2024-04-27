@@ -1,7 +1,12 @@
 - hosts: localhost
-  vars:
-    current_user: "{{ ansible_user | default(ansible_env.USER) }}"
   pre_tasks:
+    - name: get the username running the deploy
+      become: false
+      local_action: command whoami
+      register: current_user_whoami
+    - set_fact:
+        current_user: "{{ current_user_whoami.stdout }}"
+    - debug: var=current_user
     - name: Update Apt
       become: true
       apt:
@@ -22,11 +27,6 @@
         - install
         - zsh
         - shell
-    - include_tasks: tasks/dotfiles.yml
-      tags:
-        - setup
-        - dotfiles
-        - shell
     - include_tasks: tasks/productivity-tools.yml
       tags:
         - install
@@ -37,3 +37,8 @@
         - install
         - shell
         - productivity
+    - include_tasks: tasks/dotfiles.yml
+      tags:
+        - setup
+        - dotfiles
+        - shell
