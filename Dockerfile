@@ -1,16 +1,17 @@
 FROM ubuntu:jammy
 WORKDIR /usr/local/bin
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    add-apt-repository ppa:git-core/ppa && \
-    apt-add-repository -y ppa:ansible/ansible && \
-    apt-get update && \
-    apt-get install -y git software-properties-common curl build-essential ansible && \
-    apt-get clean autoclean && \
-    apt-get autoremove --yes
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install -y software-properties-common build-essential curl
+RUN add-apt-repository -y ppa:git-core/ppa
+RUN apt-add-repository -y ppa:ansible/ansible
+RUN apt-get update
+RUN apt-get install -y git ansible
+RUN apt-get clean autoclean
+RUN apt-get autoremove --yes
 
-ARG TAGS="--tags shell"
+ARG TAGS="--tags \"shell,gitconfig_school\""
 
 RUN apt-get install sudo
 RUN addgroup --gid 1000 awakefox
