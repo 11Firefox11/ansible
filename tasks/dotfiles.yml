@@ -33,9 +33,15 @@
     chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/"
   tags: *tags_for_dotfiles
 
-#- name: Reload xterm
-#  shell: xrdb -merge ~/.Xresources
-#  tags:
-#    - setup
-#    - dotfiles
-#    - desktop
+- name: Check if xrdb command exists
+  shell: command -v xrdb > /dev/null 2>&1
+  register: xrdb_check
+  ignore_errors: true
+  tags:
+    - desktop
+
+- name: Reload xterm
+  command: xrdb -merge ~/.Xresources
+  when: "'desktop' in ansible_run_tags and xrdb_check.rc == 0"
+  tags:
+    - desktop
