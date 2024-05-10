@@ -6,3 +6,12 @@
     - install
     - shell
     - core
+- name: Install desktop only core stuff from apt
+  become: true
+  apt:
+    name: [ 'feh' ]
+  when: needs_desktop
+  tags:
+    - desktop
+    - install
+    - core
