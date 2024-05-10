@@ -1,10 +1,19 @@
 - name: Install core stuff from apt (1st)
   become: true
   apt:
-    name: [ 'xterm' ]
+    name: [ 'xterm', 'flatpak' ]
   tags:
     - install
     - shell
+    - core
+- name: Add flathub to flatpak
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    method: user
+  tags:
+    - install
     - core
 - name: Install desktop only core stuff from apt
   become: true

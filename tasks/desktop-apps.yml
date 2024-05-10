@@ -1,0 +1,12 @@
+- name: Install tutanota
+  flatpak:
+    name: com.tutanota.Tutanota
+    state: present
+    method: user
+  tags: always
+- name: Put tutanota into local bin
+  file:
+    src: "/home/{{current_user}}/.local/share/flatpak/exports/bin/com.tutanota.Tutanota"
+    dest: "/home/{{current_user}}/.local/bin/tutanota"
+    state: link
+  tags: always

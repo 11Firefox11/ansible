@@ -1,16 +1,8 @@
 - hosts: localhost
   vars:
      needs_desktop: "{{ 'desktop' in ansible_run_tags | default([]) }}"
+     current_user: "{{ lookup('pipe', 'whoami') }}"
   pre_tasks:
-    - name: get the username running the deploy
-      become: false
-      local_action: command whoami
-      register: current_user_whoami
-      tags: always
-    - debug: var=needs_desktop
-      tags: always
-    - set_fact:
-        current_user: "{{ current_user_whoami.stdout }}"
     - name: Update Apt
       become: true
       apt:
@@ -36,6 +28,12 @@
         - install
         - shell
         - productivity
+    - include_tasks: tasks/desktop-apps.yml
+      when: needs_desktop
+      tags:
+        - install
+        - core
+        - desktop
     - include_tasks: tasks/eza-install.yml
       tags:
         - install
