@@ -1,7 +1,7 @@
 - name: Install core stuff from apt (1st)
   become: true
   apt:
-    name: [ 'xterm', 'flatpak' ]
+    name: [ 'flatpak' ]
   tags:
     - install
     - shell
@@ -18,7 +18,7 @@
 - name: Install desktop only core stuff from apt
   become: true
   apt:
-    name: [ 'feh' ]
+    name: [ 'feh', 'xterm', 'i3' ]
   when: needs_desktop
   tags:
     - desktop
