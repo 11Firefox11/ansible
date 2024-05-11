@@ -1,7 +1,7 @@
 - name: Install core stuff from apt (1st)
   become: true
   apt:
-    name: [ 'flatpak' ]
+    name: [ 'flatpak', 'playerctl', 'maim', 'imagemagick' ]
   tags:
     - install
     - shell
