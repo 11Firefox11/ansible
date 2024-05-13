@@ -3,11 +3,28 @@
   flatpak:
     name: com.tutanota.Tutanota
     state: present
-    method: user
   tags: always
 - name: Put tutanota into local bin
   file:
     src: "/home/{{current_user}}/.local/share/flatpak/exports/bin/com.tutanota.Tutanota"
     dest: "/home/{{current_user}}/.local/bin/tutanota"
     state: link
+  tags: always
+- name: Install sct build stuff requirements
+  become: true
+  apt:
+    name: [ 'libx11-dev', 'libxrandr-dev' ]
+  tags: always
+- name: Clone sct (Xsct X11 color temperature setter)
+  git:
+    repo: https://github.com/faf0/sct.git
+    dest: "/home/{{current_user}}/sct/"
+    clone: yes
+    update: yes
+  tags: always
+- name: Install (make) sct (Xsct X11 color temperature setter)
+  become: true
+  make:
+    chdir: "/home/{{current_user}}/sct/"
+    target: install
   tags: always
