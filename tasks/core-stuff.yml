@@ -18,7 +18,7 @@
 - name: Install desktop only core stuff from apt
   become: true
   apt:
-    name: [ 'feh', 'xterm', 'i3', 'maim', 'imagemagick', 'xclip', 'xdotool' ]
+    name: [ 'feh', 'xterm', 'i3', 'maim', 'imagemagick', 'xclip', 'xdotool', 'rofi' ]
   when: needs_desktop
   tags:
     - desktop
