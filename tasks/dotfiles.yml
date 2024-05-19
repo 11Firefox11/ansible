@@ -46,3 +46,9 @@
   when: "needs_desktop and xrdb_check.rc == 0"
   tags:
     - desktop
+
+- name: Enable ssh agent service
+  command: systemctl --user enable ssh-agent.service
+  when: needs_desktop
+  tags:
+    - desktop
