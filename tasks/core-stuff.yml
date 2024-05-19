@@ -81,3 +81,14 @@
     - desktop
     - install
     - core
+- name: Download greenclip
+  become: true
+  when: needs_desktop
+  get_url:
+    url: https://github.com/erebe/greenclip/releases/download/v4.2/greenclip
+    dest: "{{ lookup('env', 'HOME') }}/.local/bin/greenclip"
+    mode: "0755"
+  tags:
+    - desktop
+    - install
+    - core
