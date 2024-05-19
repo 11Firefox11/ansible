@@ -1,8 +1,8 @@
 - name: Install tutanota
-  become: true
   flatpak:
     name: com.tutanota.Tutanota
     state: present
+    method: user
   tags: always
 - name: Put tutanota into local bin
   file:
