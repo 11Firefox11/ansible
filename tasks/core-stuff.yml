@@ -92,3 +92,20 @@
     - desktop
     - install
     - core
+- name: Download brightnessclt
+  become: true
+  when: needs_laptop
+  apt:
+    name: brightnessctl
+  tags:
+    - laptop
+    - install
+    - core
+- name: Modify brightessctl permission
+  become: true
+  when: needs_laptop
+  shell: chmod +s $(which brightnessctl)
+  tags:
+    - laptop
+    - install
+    - core
