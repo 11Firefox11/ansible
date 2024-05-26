@@ -1,6 +1,7 @@
 - hosts: localhost
   vars:
      needs_desktop: "{{ 'desktop' in ansible_run_tags | default([]) }}"
+     needs_laptop: "{{ 'laptop' in ansible_run_tags | default([]) }}"
      current_user: "{{ lookup('pipe', 'whoami') }}"
   pre_tasks:
     - name: Update Apt
