@@ -50,3 +50,29 @@
     chdir: "/home/{{current_user}}/dunst"
     target: install
   tags: always
+- name: Dearmor spotify gpg
+  shell: curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+  tags: always
+- name: Add spotify to sources list
+  become: true
+  copy:
+    content: "deb http://repository.spotify.com stable non-free"
+    dest: /etc/apt/sources.list.d/spotify.list
+  tags: always
+- name: Set permissions for keyring and sources list
+  become: true
+  file:
+    path: /etc/apt/sources.list.d/spotify.list
+    mode: "0644"
+  tags: always
+- name: Update package list
+  become: true
+  apt:
+    update_cache: yes
+  tags: always
+- name: Install spotify
+  become: true
+  apt:
+    name: spotify-client
+    state: present
+  tags: always
