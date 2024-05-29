@@ -17,16 +17,9 @@
 
 - name: Install tldr
   get_url:
-    url: https://raw.githubusercontent.com/pepa65/tldr-bash-client/master/tldr
+    url: https://raw.githubusercontent.com/raylee/tldr/master/tldr
     dest: "~/.local/bin/"
     mode: '+x'
-  tags:
-    - install
-    - shell
-    - productivity
-
-- name: Modify less in tldr
-  command: sed -i 's/less -Gg -~RXQFP/less -QP/g' ~/.local/bin/tldr
   tags:
     - install
     - shell
