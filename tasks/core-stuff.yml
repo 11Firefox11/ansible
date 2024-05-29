@@ -109,3 +109,8 @@
     - laptop
     - install
     - core
+- name: Install fmn (node and npm version manager)
+  shell: curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+  tags:
+    - install
+    - core
