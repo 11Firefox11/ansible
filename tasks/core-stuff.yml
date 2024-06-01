@@ -1,7 +1,7 @@
 - name: Install core stuff from apt (1st)
   become: true
   apt:
-    name: [ 'flatpak', 'playerctl', 'tmux', 'xclip' ]
+    name: [ 'flatpak', 'playerctl', 'tmux', 'xclip', 'fd-find' ]
   tags:
     - install
     - shell
