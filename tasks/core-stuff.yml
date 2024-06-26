@@ -114,3 +114,25 @@
   tags:
     - install
     - core
+- name: Add neovim apt repository
+  become: true
+  apt_repository:
+    repo: ppa:neovim-ppa/unstable
+    state: present
+  tags:
+    - install
+    - core
+- name: Update package list
+  become: true
+  apt:
+    update_cache: yes
+  tags:
+    - install
+    - core
+- name: Install neovim with kickstart dependencies
+  become: true
+  apt:
+    name: [ "make", "gcc", "ripgrep", "unzip", "git", "xclip", "neovim" ]
+  tags:
+    - install
+    - core
