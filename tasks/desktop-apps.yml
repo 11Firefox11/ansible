@@ -65,6 +65,12 @@
     path: /etc/apt/sources.list.d/spotify.list
     mode: "0644"
   tags: always
+- name: Add neovim apt repository
+  become: true
+  apt_repository:
+    repo: ppa:neovim-ppa/unstable
+    state: present
+  tags: always
 - name: Update package list
   become: true
   apt:
@@ -74,7 +80,11 @@
   become: true
   apt:
     name: spotify-client
-    state: present
+  tags: always
+- name: Install neovim with kickstart dependencies
+  become: true
+  apt:
+    name: [ "make", "gcc", "ripgrep", "unzip", "git", "xclip", "neovim" ]
   tags: always
 - name: Set default keyboard layouts
   command: localectl --no-convert set-x11-keymap us,hu grp:win_space_toggle
