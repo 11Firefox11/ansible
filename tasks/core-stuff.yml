@@ -114,14 +114,6 @@
   tags:
     - install
     - core
-- name: Add neovim apt repository
-  become: true
-  apt_repository:
-    repo: ppa:neovim-ppa/unstable
-    state: present
-  tags:
-    - install
-    - core
 - name: Update package list
   become: true
   apt:
@@ -129,10 +121,43 @@
   tags:
     - install
     - core
-- name: Install neovim with kickstart dependencies
+- name: Download Neovim tarball
+  become: true
+  get_url:
+    url: "https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz"
+    dest: "/tmp/nvim-linux64.tar.gz"
+  tags:
+    - install
+    - core
+- name: Ensure /opt/nvim directory exists
+  become: true
+  file:
+    path: "/opt/nvim-linux64"
+    state: directory
+  tags:
+    - install
+    - core
+- name: Remove existing /opt/nvim directory
+  become: true
+  file:
+    path: "/opt/nvim-linux64"
+    state: absent
+  tags:
+    - install
+    - core
+- name: Extract Neovim tarball to /opt
+  become: true
+  unarchive:
+    src: "/tmp/nvim-linux64.tar.gz"
+    dest: "/opt"
+    remote_src: yes
+  tags:
+    - install
+    - core
+- name: Install neovim kickstart dependencies
   become: true
   apt:
-    name: [ "make", "gcc", "ripgrep", "unzip", "git", "xclip", "neovim" ]
+    name: [ "make", "gcc", "ripgrep", "unzip", "git", "xclip" ]
   tags:
     - install
     - core
