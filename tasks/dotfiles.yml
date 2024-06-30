@@ -68,6 +68,17 @@
   tags:
     - desktop
 
+- name: Check if tmux command exists
+  shell: command -v tmux > /dev/null 2>&1
+  register: tmux_check
+  ignore_errors: true
+  tags: *tags_for_dotfiles
+
+- name: Reload tmux
+  command: tmux source-file ~/.tmux.conf
+  when: "tmux_check.rc == 0"
+  tags: *tags_for_dotfiles
+
 - name: Install urgent watcher pip dependency
   command: pip install i3ipc
   when: needs_desktop
