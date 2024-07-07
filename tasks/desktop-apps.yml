@@ -1,14 +1,8 @@
 - name: Install tutanota
-  flatpak:
-    name: com.tutanota.Tutanota
-    state: present
-    method: user
-  tags: always
-- name: Put tutanota into local bin
-  file:
-    src: "/home/{{current_user}}/.local/share/flatpak/exports/bin/com.tutanota.Tutanota"
-    dest: "/home/{{current_user}}/.local/bin/tutanota"
-    state: link
+  get_url:
+    url: https://app.tuta.com/desktop/tutanota-desktop-linux.AppImage
+    dest: "{{ ansible_env.HOME }}/.local/bin/tutanota"
+    mode: '0755'
   tags: always
 - name: Install sct build stuff requirements
   become: true
