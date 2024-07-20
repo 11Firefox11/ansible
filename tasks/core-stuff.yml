@@ -18,7 +18,7 @@
 - name: Install desktop only core stuff from apt
   become: true
   apt:
-    name: [ 'feh', 'xterm', 'i3', 'maim', 'imagemagick', 'xdotool', 'rofi', 'qbittorrent', 'compton' ]
+    name: [ 'feh', 'xterm', 'i3', 'maim', 'imagemagick', 'xdotool', 'rofi', 'qbittorrent', 'compton', 'unclutter-xfixes' ]
   when: needs_desktop
   tags:
     - desktop
