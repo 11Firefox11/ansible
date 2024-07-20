@@ -70,5 +70,5 @@
     name: spotify-client
   tags: always
 - name: Set default keyboard layouts
-  command: localectl --no-convert set-x11-keymap us,hu grp:win_space_toggle
+  command: localectl --no-convert set-x11-keymap huprog
   tags: always
