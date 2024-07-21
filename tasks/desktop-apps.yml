@@ -72,3 +72,7 @@
 - name: Set default keyboard layouts
   command: localectl --no-convert set-x11-keymap huprog
   tags: always
+- name: Disable ibus
+  become: true
+  command: chmod 000 /usr/bin/ibus-daemon
+  tags: always
