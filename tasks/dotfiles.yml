@@ -34,50 +34,11 @@
     chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/"
   tags: *tags_for_dotfiles
 
-- name: Check if xrdb command exists
-  shell: command -v xrdb > /dev/null 2>&1
-  register: xrdb_check
-  ignore_errors: true
-  when: needs_desktop
-  tags:
-    - desktop
-
-- name: Reload xterm
-  command: xrdb -merge ~/.Xresources
-  when: "needs_desktop and xrdb_check.rc == 0"
-  tags:
-    - desktop
-
 - name: Enable ssh agent service
   command: systemctl --user enable ssh-agent.service
   when: needs_desktop
   tags:
     - desktop
-
-- name: Check if i3-msg command exists
-  shell: command -v i3-msg > /dev/null 2>&1
-  register: i3msg_check
-  ignore_errors: true
-  when: needs_desktop
-  tags:
-    - desktop
-
-- name: Reload i3
-  command: i3-msg reload
-  when: "needs_desktop and i3msg_check.rc == 0"
-  tags:
-    - desktop
-
-- name: Check if tmux command exists
-  shell: command -v tmux > /dev/null 2>&1
-  register: tmux_check
-  ignore_errors: true
-  tags: *tags_for_dotfiles
-
-- name: Reload tmux
-  command: tmux source-file ~/.tmux.conf
-  when: "tmux_check.rc == 0"
-  tags: *tags_for_dotfiles
 
 - name: Install urgent watcher pip dependency
   command: pip install i3ipc

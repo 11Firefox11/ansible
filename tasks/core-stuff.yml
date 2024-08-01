@@ -92,6 +92,66 @@
     - desktop
     - install
     - core
+- name: Download kanata
+  become: true
+  when: needs_desktop
+  get_url:
+    url: https://github.com/jtroo/kanata/releases/download/v1.6.1/kanata
+    dest: "{{ lookup('env', 'HOME') }}/.local/bin/kanata"
+    mode: "0755"
+  tags:
+    - desktop
+    - install
+    - core
+- name: Check if 'uinput' group exists for kanata
+  shell: grep -E "^uinput" /etc/group
+  when: needs_desktop
+  register: group_check
+  ignore_errors: true
+  tags:
+    - desktop
+    - install
+    - core
+- name: Create 'uinput' group if missing
+  become: true
+  group:
+    name: uinput
+  when: needs_desktop && group_check.rc != 0
+  tags:
+    - desktop
+    - install
+    - core
+- name: Add current user to 'input' and 'uinput' groups
+  become: true
+  user:
+    name: "{{ current_user }}"
+    append: yes
+    groups:
+      - input
+      - uinput
+  when: needs_desktop && group_check.rc != 0
+  tags:
+    - desktop
+    - install
+    - core
+- name: Add udev rule for uinput
+  become: true
+  lineinfile:
+    path: /etc/udev/rules.d/99-uinput.rules
+    line: "KERNEL==\"uinput\", MODE=\"0660\", GROUP=\"uinput\", OPTIONS+=\"static_node=uinput\""
+  when: needs_desktop && group_check.rc != 0
+  tags:
+    - desktop
+    - install
+    - core
+- name: Load uinput module
+  become: true
+  command: modprobe uinput
+  when: needs_desktop && group_check.rc != 0
+  tags:
+    - desktop
+    - install
+    - core
 - name: Download brightnessclt
   become: true
   when: needs_laptop
