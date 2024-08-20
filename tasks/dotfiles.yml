@@ -28,6 +28,20 @@
   tags:
     - gitconfig_school
 
+- name: Set git skip-worktree for gp-config nvim
+  command: git update-index --skip-worktree "{{ lookup('env', 'HOME') }}/.dotfiles/nvim/.config/nvim/gp-config.lua"
+  args:
+    chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/"
+  tags:
+    - gp_config
+
+- name: Decrypt gp-config nvim via ansible vault
+  command:
+    cmd: ansible-vault decrypt "{{ lookup('env', 'HOME') }}/.dotfiles/nvim/.config/nvim/gp-config.lua"
+    chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/" 
+  tags:
+    - gp_config
+
 - name: Stow dotfiles
   command:
     cmd: bash ./install
