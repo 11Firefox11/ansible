@@ -116,7 +116,7 @@
   become: true
   group:
     name: uinput
-  when: needs_desktop && group_check.rc != 0
+  when: needs_desktop and group_check.rc != 0
   tags:
     - desktop
     - install
@@ -129,7 +129,7 @@
     groups:
       - input
       - uinput
-  when: needs_desktop && group_check.rc != 0
+  when: needs_desktop and group_check.rc != 0
   tags:
     - desktop
     - install
@@ -139,7 +139,7 @@
   lineinfile:
     path: /etc/udev/rules.d/99-uinput.rules
     line: "KERNEL==\"uinput\", MODE=\"0660\", GROUP=\"uinput\", OPTIONS+=\"static_node=uinput\""
-  when: needs_desktop && group_check.rc != 0
+  when: needs_desktop and group_check.rc != 0
   tags:
     - desktop
     - install
@@ -147,7 +147,7 @@
 - name: Load uinput module
   become: true
   command: modprobe uinput
-  when: needs_desktop && group_check.rc != 0
+  when: needs_desktop and group_check.rc != 0
   tags:
     - desktop
     - install
