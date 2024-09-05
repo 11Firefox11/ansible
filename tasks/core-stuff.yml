@@ -25,7 +25,7 @@
     - install
     - core
 - name: Check if lucide font is already installed
-  shell: fc-list | grep "lucide"
+  shell: fc-list | grep "Hack Nerd Font"
   register: font_check_result
   changed_when: false
   ignore_errors: true
@@ -42,32 +42,40 @@
     - desktop
     - install
     - core
-- name: Download lucide from GitHub
+- name: Download Nerd Fonts from GitHub
   get_url:
-    url: https://github.com/lucide-icons/lucide/releases/download/0.378.0/lucide-font-0.378.0.zip
-    dest: /tmp/lucide-font-0.378.0.zip
-  when: needs_desktop and not font_installed
-  tags:
-    - desktop
-    - install
-    - core
-- name: Unzip lucide zip
-  unarchive:
-    src: /tmp/lucide-font-0.378.0.zip
+    url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hack.tar.xz
     dest: /tmp/
   when: needs_desktop and not font_installed
   tags:
     - desktop
     - install
     - core
-- name: Move lucide.ttf to /usr/local/share/fonts
+- name: Ensure the extraction path exists
+  file:
+    path: /tmp/Hack
+    state: directory
+  when: needs_desktop and not font_installed
+  tags:
+    - desktop
+    - install
+    - core
+- name: Extract Hack Nerd Font
+  unarchive:
+    src: /tmp/Hack.tar.xz
+    dest: /tmp/Hack
+  when: needs_desktop and not font_installed
+  tags:
+    - desktop
+    - install
+    - core
+- name: Move .ttf files to /usr/local/share/fonts/
   become: true
   copy:
-    src: /tmp/lucide-font/lucide.ttf
+    src: "{{ item }}"
     dest: /usr/local/share/fonts/
-    owner: root
-    group: root
-    mode: '0644'
+    remote_src: yes
+  with_fileglob: "/tmp/Hack/*.ttf"
   when: needs_desktop and not font_installed
   tags:
     - desktop
