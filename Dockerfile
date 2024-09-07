@@ -15,7 +15,7 @@ RUN apt-get install -y git ansible
 RUN apt-get clean autoclean
 RUN apt-get autoremove --yes
 
-ARG TAGS="--tags \"shell,gitconfig_school,gp_config\""
+ARG TAGS="--tags \"core,dotfiles,dotfiles_core,neovim,languages\""
 
 RUN apt-get install sudo
 RUN addgroup --gid 1000 awakefox

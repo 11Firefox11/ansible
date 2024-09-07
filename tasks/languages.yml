@@ -1,0 +1,20 @@
+- name: Install fmn (node and npm version manager)
+  shell: curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+  become_user: "{{ current_user }}"
+- name: Install and use Node 20
+  shell: zsh -l -c 'fnm use --install-if-missing 20'
+  become_user: "{{ current_user }}"
+- name: Add Golang PPA repository
+  apt_repository:
+    repo: ppa:longsleep/golang-backports
+    state: present
+- name: Update the apt package list
+  apt:
+    update_cache: yes
+- name: Install Golang
+  apt:
+    name: golang-go
+    state: present
+- name: Install bun
+  shell: curl -fsSL https://bun.sh/install | bash
+  become_user: "{{ current_user }}"

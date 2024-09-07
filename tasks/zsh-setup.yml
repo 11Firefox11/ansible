@@ -3,11 +3,8 @@
   apt:
     name: zsh
     state: present
-  tags: &tags_for_zsh_install [ 'install', 'zsh', 'shell' ]
-
 - name: Set ZSH as default shell
   user:
     name: "{{ current_user }}"
     shell: "{{ lookup('pipe', 'which zsh') }}"
   become: true
-  tags: *tags_for_zsh_install

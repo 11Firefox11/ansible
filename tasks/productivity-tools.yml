@@ -1,60 +1,57 @@
-- name: Install tools from apt (1st)
-  become: true
-  apt:
-    name: [ 'xclip' ]
-  tags:
-    - install
-    - shell
-
 - name: Ensure ~/.local/bin directory exists
   file:
     path: "~/.local/bin"
     state: directory
-  tags:
-    - install
-    - shell
-    - productivity
-
 - name: Install tldr
   get_url:
     url: https://raw.githubusercontent.com/raylee/tldr/master/tldr
     dest: "~/.local/bin/"
     mode: '+x'
-  tags:
-    - install
-    - shell
-    - productivity
-
+  become_user: "{{ current_user }}"
 - name: Install bat
   become: true
   apt:
     name: bat
     state: present
     update_cache: yes
-  tags:
-    - install
-    - shell
-    - productivity
-
 - name: Create symbolic link for batcat
   file:
     src: "/usr/bin/batcat"
     dest: "~/.local/bin/bat"
     state: link
-  tags:
-    - install
-    - shell
-    - productivity
-
+  become_user: "{{ current_user }}"
 - name: Install zoxide
   shell: curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
   args:
     executable: /bin/sh
   become_user: "{{ current_user }}"
-  tags:
-    - install
-    - shell
-    - productivity
-
 - name: Install fzf
   shell: git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --bin
+  become_user: "{{ current_user }}"
+- name: Download the eza tar.gz file
+  get_url:
+    url: "https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz"
+    dest: "/tmp/eza.tar.gz"
+    mode: '0644'
+- name: Ensure /tmp/eza/ directory exists
+  become: true
+  file:
+    path: "/tmp/eza/"
+    state: directory
+- name: Unarchive the eza tar.gz file
+  become: true
+  unarchive:
+    src: "/tmp/eza.tar.gz"
+    dest: "/tmp/eza/"
+    remote_src: yes
+- name: Move the eza binary to bin
+  become: true
+  command: mv /tmp/eza/eza ~/.local/bin/
+  become_user: "{{ current_user }}"
+- name: Adjust permissions on the eza binary
+  file:
+    path: ".{{ lookup('env', 'HOME') }}/local/bin/eza"
+    mode: '0755'
+    owner: "{{ current_user }}"
+    group: "{{ current_user }}"
+  become: true

@@ -1,0 +1,21 @@
+- name: Download Neovim tarball
+  become: true
+  get_url:
+    url: "https://github.com/neovim/neovim/releases/download/v0.10.1/nvim-linux64.tar.gz"
+    dest: "/tmp/nvim-linux64.tar.gz"
+- name: Ensure /opt/nvim directory exists
+  become: true
+  file:
+    path: "/opt/nvim-linux64"
+    state: directory
+- name: Remove existing /opt/nvim directory
+  become: true
+  file:
+    path: "/opt/nvim-linux64"
+    state: absent
+- name: Extract Neovim tarball to /opt
+  become: true
+  unarchive:
+    src: "/tmp/nvim-linux64.tar.gz"
+    dest: "/opt"
+    remote_src: yes
