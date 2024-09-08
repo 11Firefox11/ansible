@@ -2,3 +2,5 @@
   become: true
   apt:
     name: [ 'tmux', 'xclip', 'fd-find', 'inotify-tools', 'unzip', 'make', 'ripgrep', 'gcc' ]
+  tags:
+    - core

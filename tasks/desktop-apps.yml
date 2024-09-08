@@ -2,90 +2,130 @@
   become: true
   apt:
     name: [ 'feh', 'xterm', 'i3', 'maim', 'imagemagick', 'xdotool', 'rofi', 'qbittorrent', 'compton', 'unclutter-xfixes', 'playerctl' ]
+  tags:
+    - desktop
 - name: Install tutanota
   get_url:
     url: https://app.tuta.com/desktop/tutanota-desktop-linux.AppImage
     dest: "{{ ansible_env.HOME }}/.local/bin/tutanota"
     mode: '0755'
+  tags:
+    - desktop
 - name: Install sct build stuff requirements
   become: true
   apt:
     name: [ 'libx11-dev', 'libxrandr-dev' ]
+  tags:
+    - desktop
 - name: Clone sct (Xsct X11 color temperature setter)
   git:
     repo: https://github.com/faf0/sct.git
     dest: "/home/{{current_user}}/sct/"
     clone: yes
     update: yes
+  tags:
+    - desktop
 - name: Install (make) sct (Xsct X11 color temperature setter)
   become: true
   make:
     chdir: "/home/{{current_user}}/sct/"
     target: install
+  tags:
+    - desktop
 - name: Clone dunst
   git:
     repo: https://github.com/dunst-project/dunst.git
     dest: "/home/{{current_user}}/dunst"
     clone: yes
     update: yes
+  tags:
+    - desktop
 - name: Install dunst dependencies
   become: true
   apt:
     name: [ 'libdbus-1-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxss-dev', 'libglib2.0-dev', 'libpango1.0-dev', 'libgtk-3-dev', 'libxdg-basedir-dev', 'libgdk-pixbuf-2.0-dev', 'libnotify-dev' ]
+  tags:
+    - desktop
 - name: Install (make) dunst
   make:
     chdir: "/home/{{current_user}}/dunst"
+  tags:
+    - desktop
 - name: Sudo install (make) dunst
   become: yes
   make:
     chdir: "/home/{{current_user}}/dunst"
     target: install
+  tags:
+    - desktop
 - name: Dearmor spotify gpg
   shell: curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+  tags:
+    - desktop
 - name: Add spotify to sources list
   become: true
   copy:
     content: "deb http://repository.spotify.com stable non-free"
     dest: /etc/apt/sources.list.d/spotify.list
+  tags:
+    - desktop
 - name: Set permissions for keyring and sources list
   become: true
   file:
     path: /etc/apt/sources.list.d/spotify.list
     mode: "0644"
+  tags:
+    - desktop
 - name: Update package list
   become: true
   apt:
     update_cache: yes
+  tags:
+    - desktop
 - name: Install spotify
   become: true
   apt:
     name: spotify-client
+  tags:
+    - desktop
 - name: Set default keyboard layouts
   command: localectl --no-convert set-x11-keymap huprog
+  tags:
+    - desktop
 - name: Disable ibus
   become: true
   command: chmod 000 /usr/bin/ibus-daemon
+  tags:
+    - desktop
 - name: Download greenclip
   become: true
   get_url:
     url: https://github.com/erebe/greenclip/releases/download/v4.2/greenclip
     dest: "{{ lookup('env', 'HOME') }}/.local/bin/greenclip"
     mode: "0755"
+  tags:
+    - desktop
 - name: download kanata
   become: true
   get_url:
     url: https://github.com/jtroo/kanata/releases/download/v1.6.1/kanata
     dest: "{{ lookup('env', 'home') }}/.local/bin/kanata"
     mode: "0755"
+  tags:
+    - desktop
 - name: check if 'uinput' group exists for kanata
   shell: grep -e "^uinput" /etc/group
   register: group_check
   ignore_errors: true
+  tags:
+    - desktop
 - name: create 'uinput' group if missing
   become: true
   group:
     name: uinput
   when: group_check.rc != 0
+  tags:
+    - desktop
 - name: add current user to 'input' and 'uinput' groups
   become: true
   user:
@@ -95,22 +135,32 @@
       - input
       - uinput
   when: group_check.rc != 0
+  tags:
+    - desktop
 - name: add udev rule for uinput
   become: true
   lineinfile:
     path: /etc/udev/rules.d/99-uinput.rules
     line: "kernel==\"uinput\", mode=\"0660\", group=\"uinput\", options+=\"static_node=uinput\""
   when: group_check.rc != 0
+  tags:
+    - desktop
 - name: and load uinput module
   become: true
   command: modprobe uinput
   when: group_check.rc != 0
+  tags:
+    - desktop
 - name: Download brightnessclt
   become: true
   when: needs_laptop
   apt:
     name: brightnessctl
+  tags:
+    - desktop
 - name: Modify brightessctl permission
   become: true
   when: needs_laptop
   shell: chmod +s $(which brightnessctl)
+  tags:
+    - desktop

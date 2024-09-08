@@ -1,6 +1,8 @@
 - name: Install stow
   become: true
   apt: name=stow
+  tags:
+    - dotfiles
 - name: Clone .dotfiles repo
   git:
     repo: "https://github.com/11Firefox11/.dotfiles.git"
@@ -9,45 +11,60 @@
     update: no
     accept_hostkey: yes
     version: main
+  tags:
+    - dotfiles
 - name: Set git skip-worktree for school gitconfig
   command: git update-index --skip-worktree "{{ lookup('env', 'HOME') }}/.dotfiles/git/.gitconfig-school"
   args:
     chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/"
   tags:
     - gitconfig_school
-- name: Decrypt school gitconfig via ansible vault
+    - dotfiles
+- name: Decrypt school gitconfig via ansible vault {{ dotfiles_core }}
   command:
     cmd: ansible-vault decrypt "{{ lookup('env', 'HOME') }}/.dotfiles/git/.gitconfig-school"
     chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/" 
   when: not dotfiles_core
   tags:
     - gitconfig_school
+    - dotfiles
 - name: Set git skip-worktree for gp-config nvim
   command: git update-index --skip-worktree "{{ lookup('env', 'HOME') }}/.dotfiles/nvim/.config/nvim/gp-config.lua"
   args:
     chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/"
   tags:
     - gp_config
+    - dotfiles
 - name: Decrypt gp-config nvim via ansible vault
   command:
     cmd: ansible-vault decrypt "{{ lookup('env', 'HOME') }}/.dotfiles/nvim/.config/nvim/gp-config.lua"
     chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/" 
-  when: not dotfiles_core
   tags:
     - gp_config
+    - dotfiles
 - name: Stow dotfiles all
   command:
     cmd: bash ./install
     chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/"
+  become_user: "{{ current_user }}"
   when: not dotfiles_core
+  tags:
+    - dotfiles
 - name: Stow dotfiles core
   command:
     cmd: bash ./install --core
     chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/"
+  become_user: "{{ current_user }}"
   when: dotfiles_core
+  tags:
+    - dotfiles
 - name: Enable ssh agent service
   command: systemctl --user enable ssh-agent.service
   when: needs_desktop
+  tags:
+    - dotfiles
 - name: Install urgent watcher pip dependency
   command: pip install i3ipc
   when: needs_desktop
+  tags:
+    - dotfiles

@@ -15,8 +15,7 @@ RUN apt-get install -y git ansible
 RUN apt-get clean autoclean
 RUN apt-get autoremove --yes
 
-ARG TAGS="--tags \"core,dotfiles,dotfiles_core,neovim,languages\""
-
+ARG TAGS="--tags core,dotfiles,dotfiles_core,neovim,languages"
 RUN apt-get install sudo
 RUN addgroup --gid 1000 awakefox
 RUN adduser --gecos awakefox --gid 1000 --uid 1000 awakefox
@@ -31,5 +30,7 @@ WORKDIR /home/awakefox
 COPY . ./ansible
 WORKDIR /home/awakefox/
 
-CMD ["sh", "-c", "if [ ! -f /home/awakefox/playbook_run_flag ]; then ansible-playbook $TAGS /home/awakefox/ansible/local.yml && touch /home/awakefox/playbook_run_flag; fi && tail -f /dev/null"]
+ENV TAGS=${TAGS}
+# CMD echo ${TAGS}
+CMD if [ ! -f /home/awakefox/playbook_run_flag ]; then ansible-playbook ${TAGS} /home/awakefox/ansible/local.yml && touch /home/awakefox/playbook_run_flag; fi && tail -f /dev/null
 

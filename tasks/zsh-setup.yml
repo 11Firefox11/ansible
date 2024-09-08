@@ -3,8 +3,14 @@
   apt:
     name: zsh
     state: present
+  tags:
+    - core
 - name: Set ZSH as default shell
   user:
     name: "{{ current_user }}"
     shell: "{{ lookup('pipe', 'which zsh') }}"
   become: true
+  tags:
+    - core
+- name: Install ZSH plugins by sourcing zshrc
+  shell: zsh -c ". ~/.zshrc"
