@@ -1,0 +1,36 @@
+- name: Install fnm (node and npm version manager)
+  shell: curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+  become_user: "{{ current_user }}"
+  tags:
+    - languages
+- name: Install and use Node 20
+  shell: zsh -c ". ~/.zshrc; fnm use --install-if-missing 20"
+  become_user: "{{ current_user }}"
+  tags:
+    - languages
+- name: Download Go tar.gz
+  get_url:
+    url: https://go.dev/dl/go1.23.1.linux-amd64.tar.gz
+    dest: /tmp/go1.23.1.linux-amd64.tar.gz
+  tags:
+    - languages
+- name: Remove existing Go installation
+  file:
+    path: /usr/local/go
+    state: absent
+    force: yes
+  tags:
+    - languages
+- name: Extract Go tar.gz
+  become: yes
+  unarchive:
+    src: /tmp/go1.23.1.linux-amd64.tar.gz
+    dest: /usr/local
+    remote_src: yes
+  tags:
+    - languages
+- name: Install bun
+  shell: curl -fsSL https://bun.sh/install | bash
+  become_user: "{{ current_user }}"
+  tags:
+    - languages

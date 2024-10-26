@@ -190,5 +190,4 @@
   apt:
     name: [ "make", "gcc", "ripgrep", "unzip", "git", "xclip" ]
   tags:
-    - install
     - core

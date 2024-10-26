@@ -1,19 +1,18 @@
 - name: Install stow
   become: true
   apt: name=stow
-  tags: &tags_for_dotfiles [ 'setup', 'dotfiles', 'shell' ]
-
+  tags:
+    - dotfiles
 - name: Clone .dotfiles repo
-  ansible.builtin.git:
+  git:
     repo: "https://github.com/11Firefox11/.dotfiles.git"
     dest: "{{ lookup('env', 'HOME') }}/.dotfiles"
     recursive: yes
     update: no
     accept_hostkey: yes
     version: main
-  when: "'stow' not in ansible_run_tags"
-  tags: *tags_for_dotfiles
-
+  tags:
+    - dotfiles
 - name: Set git skip-worktree for school gitconfig
   command: git update-index --skip-worktree "{{ lookup('env', 'HOME') }}/.dotfiles/git/.gitconfig-school"
   args:
@@ -26,6 +25,7 @@
   command:
     cmd: ansible-vault decrypt "{{ lookup('env', 'HOME') }}/.dotfiles/git/.gitconfig-school"
     chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/" 
+  when: not dotfiles_core
   tags:
     - gitconfig_school
 
@@ -46,7 +46,7 @@
   tags:
     - gp_config_nopw
     - gp_config
-
+    - dotfiles
 - name: Decrypt gp-config nvim via ansible vault
   command:
     cmd: ansible-vault decrypt "{{ lookup('env', 'HOME') }}/.dotfiles/nvim/.config/nvim/gp-config.lua"
@@ -70,16 +70,25 @@
   command:
     cmd: bash ./install
     chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/"
-  tags: *tags_for_dotfiles
-
+  become_user: "{{ current_user }}"
+  when: not dotfiles_core
+  tags:
+    - dotfiles
+- name: Stow dotfiles core
+  command:
+    cmd: bash ./install --core
+    chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/"
+  become_user: "{{ current_user }}"
+  when: dotfiles_core
+  tags:
+    - dotfiles
 - name: Enable ssh agent service
   command: systemctl --user enable ssh-agent.service
   when: needs_desktop
   tags:
-    - desktop
-
+    - dotfiles
 - name: Install urgent watcher pip dependency
   command: pip install i3ipc
   when: needs_desktop
   tags:
-    - desktop
+    - dotfiles

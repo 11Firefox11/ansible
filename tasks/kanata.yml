@@ -1,0 +1,42 @@
+- name: download kanata
+  become: true
+  get_url:
+    url: https://github.com/jtroo/kanata/releases/download/v1.6.1/kanata
+    dest: "{{ lookup('env', 'home') }}/.local/bin/kanata"
+    mode: "0755"
+  tags:
+    - desktop
+- name: check if 'uinput' group exists for kanata
+  shell: grep -e "^uinput" /etc/group
+  register: group_check
+  ignore_errors: true
+  tags:
+    - desktop
+- name: create 'uinput' group if missing
+  become: true
+  group:
+    name: uinput
+  tags:
+    - desktop
+- name: add current user to 'input' and 'uinput' groups
+  become: true
+  user:
+    name: "{{ current_user }}"
+    append: yes
+    groups:
+      - input
+      - uinput
+  tags:
+    - desktop
+- name: add udev rule for uinput
+  become: true
+  lineinfile:
+    path: /etc/udev/rules.d/99-uinput.rules
+    line: "kernel==\"uinput\", mode=\"0660\", group=\"uinput\", options+=\"static_node=uinput\""
+  tags:
+    - desktop
+- name: load uinput module
+  become: true
+  command: modprobe uinput
+  tags:
+    - desktop

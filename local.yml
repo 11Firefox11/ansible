@@ -2,6 +2,7 @@
   vars:
      needs_desktop: "{{ 'desktop' in ansible_run_tags | default([]) }}"
      needs_laptop: "{{ 'laptop' in ansible_run_tags | default([]) }}"
+     dotfiles_core: "{{ 'dotfiles_core' in ansible_run_tags | default([]) }}"
      current_user: "{{ lookup('pipe', 'whoami') }}"
   pre_tasks:
     - name: Update Apt
@@ -10,9 +11,7 @@
         force_apt_get: true
         update_cache: true
         state: present
-      tags:
-        - install
-        - core
+      tags: always
   tasks:
     - include_tasks: tasks/zsh-setup.yml
       tags:
@@ -27,16 +26,16 @@
         - gitconfig_school
     - include_tasks: tasks/productivity-tools.yml
       tags:
-        - install
-        - shell
-        - productivity
+        - core
     - include_tasks: tasks/desktop-apps.yml
       when: needs_desktop
       tags:
-        - install
-        - core
         - desktop
-    - include_tasks: tasks/eza-install.yml
+    - include_tasks: tasks/kanata.yml
+      when: needs_desktop
+      tags:
+        - desktop
+    - include_tasks: tasks/neovim.yml
       tags:
         - install
         - shell
