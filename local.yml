@@ -14,16 +14,17 @@
         - install
         - core
   tasks:
-    - include_tasks: tasks/core-stuff.yml
-      tags:
-        - install
-        - shell
-        - core
     - include_tasks: tasks/zsh-setup.yml
       tags:
         - install
         - zsh
         - shell
+    - include_tasks: tasks/dotfiles.yml
+      tags:
+        - setup
+        - dotfiles
+        - shell
+        - gitconfig_school
     - include_tasks: tasks/productivity-tools.yml
       tags:
         - install
@@ -40,9 +41,8 @@
         - install
         - shell
         - productivity
-    - include_tasks: tasks/dotfiles.yml
+    - include_tasks: tasks/core-stuff.yml
       tags:
-        - setup
-        - dotfiles
+        - install
         - shell
-        - gitconfig_school
+        - core

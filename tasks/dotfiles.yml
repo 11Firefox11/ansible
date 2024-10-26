@@ -20,6 +20,7 @@
     chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/"
   tags:
     - gitconfig_school
+    - gitconfig_school_nopw
 
 - name: Decrypt school gitconfig via ansible vault
   command:
@@ -28,11 +29,22 @@
   tags:
     - gitconfig_school
 
+- name: School gitconfig with no password required
+  copy:
+    content: |
+      [user]
+        name = 73575967459
+        email = diak_364.tomo.viktor@12.c.2023.com
+    dest: "{{ lookup('env', 'HOME') }}/.dotfiles/git/.gitconfig-school"
+  tags:
+    - gitconfig_school_nopw
+
 - name: Set git skip-worktree for gp-config nvim
   command: git update-index --skip-worktree "{{ lookup('env', 'HOME') }}/.dotfiles/nvim/.config/nvim/gp-config.lua"
   args:
     chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/"
   tags:
+    - gp_config_nopw
     - gp_config
 
 - name: Decrypt gp-config nvim via ansible vault
@@ -41,6 +53,18 @@
     chdir: "{{ lookup('env', 'HOME') }}/.dotfiles/" 
   tags:
     - gp_config
+
+- name: Gp-config with no password required
+  copy:
+    content: |
+      return {
+        'bash',
+        '-c',
+        'echo ""',
+      }
+    dest: "{{ lookup('env', 'HOME') }}/.dotfiles/nvim/.config/nvim/gp-config.lua"
+  tags:
+    - gp_config_nopw
 
 - name: Stow dotfiles
   command:

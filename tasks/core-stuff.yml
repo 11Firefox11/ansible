@@ -24,51 +24,6 @@
     - desktop
     - install
     - core
-- name: Check if lucide font is already installed
-  shell: fc-list | grep "Hack Nerd Font"
-  register: font_check_result
-  changed_when: false
-  ignore_errors: true
-  when: needs_desktop
-  tags:
-   - desktop
-   - install
-   - core
-- name: Set fact if lucide installed
-  set_fact:
-    font_installed: "{{ font_check_result.rc == 0 }}"
-  when: needs_desktop
-  tags:
-    - desktop
-    - install
-    - core
-- name: Download Nerd Fonts from GitHub
-  get_url:
-    url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hack.tar.xz
-    dest: /tmp/
-  when: needs_desktop and not font_installed
-  tags:
-    - desktop
-    - install
-    - core
-- name: Ensure the extraction path exists
-  file:
-    path: /tmp/Hack
-    state: directory
-  when: needs_desktop and not font_installed
-  tags:
-    - desktop
-    - install
-    - core
-- name: Extract Hack Nerd Font
-  unarchive:
-    src: /tmp/Hack.tar.xz
-    dest: /tmp/Hack
-  when: needs_desktop and not font_installed
-  tags:
-    - desktop
-    - install
-    - core
 - name: Move .ttf files to /usr/local/share/fonts/
   become: true
   copy:
@@ -179,6 +134,14 @@
     - core
 - name: Install fmn (node and npm version manager)
   shell: curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+  tags:
+    - install
+    - core
+- name: Source zshrc and install latest node and npm using fnm
+  shell: |
+    zsh -c 'source ~/.zshrc && fnm use --install-if-missing 20'
+  args:
+    executable: /bin/zsh
   tags:
     - install
     - core

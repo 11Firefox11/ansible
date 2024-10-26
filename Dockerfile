@@ -15,8 +15,6 @@ RUN apt-get install -y git ansible
 RUN apt-get clean autoclean
 RUN apt-get autoremove --yes
 
-ARG TAGS="--tags \"shell,gitconfig_school,gp_config\""
-
 RUN apt-get install sudo
 RUN addgroup --gid 1000 awakefox
 RUN adduser --gecos awakefox --gid 1000 --uid 1000 awakefox
@@ -31,5 +29,7 @@ WORKDIR /home/awakefox
 COPY . ./ansible
 WORKDIR /home/awakefox/
 
-CMD ["sh", "-c", "if [ ! -f /home/awakefox/playbook_run_flag ]; then ansible-playbook $TAGS /home/awakefox/ansible/local.yml && touch /home/awakefox/playbook_run_flag; fi && tail -f /dev/null"]
+ARG TAGS="--tags setup,shell,core,gitconfig_school_nopw,gp_config_nopw"
+ENV ANS_TAGS=$TAGS
+CMD ["sh", "-c", "if [ ! -f /home/awakefox/playbook_run_flag ]; then ansible-playbook $ANS_TAGS /home/awakefox/ansible/local.yml && touch /home/awakefox/playbook_run_flag; fi && tail -f /dev/null"]
 
